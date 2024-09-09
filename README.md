@@ -158,5 +158,3 @@ The following cron jobs are configured inside the container:
 - **Generate Charts**: `plot_data.py` runs every day at 09:30 AM.
 
 Cron job logs are available in the `local-logs/` directory on your host machine.
-
-# nfl-transaction-monitor
