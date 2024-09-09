@@ -145,8 +145,8 @@ docker-compose down
 │   ├── config.yaml                # YAML file for backup config if environment variables are not used
 ├── collect_data.py                # Script to collect transaction data
 ├── plot_data.py                   # Script to generate TPS charts
-├── local-data/                    # Mounted directory for storing generated data and charts
-├── local-logs/                    # Mounted directory for cron job logs (updated to local-logs)
+├── local-data/                    # Mounted directory for storing generated data and charts (create this folder to run docker-compose)
+├── local-logs/                    # Mounted directory for cron job logs (create this folder to run docker-compose)
 └── README.md                      # This documentation
 ```
 
