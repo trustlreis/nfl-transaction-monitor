@@ -3,6 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
 from config import load_nfl_dates
+import argparse
 
 # Create directory structure for charts
 def create_chart_dirs(season):
@@ -41,9 +42,22 @@ def plot_tps(data_file, nfl_period, target_date):
     plt.close()
 
 def main():
-    # Calculate "yesterday"
-    today = datetime.now().date()
-    yesterday = today - timedelta(days=1)
+    # Setup argparse to optionally accept a date
+    parser = argparse.ArgumentParser(description="Generate TPS chart for a specific date or yesterday by default.")
+    parser.add_argument('--date', type=str, help="Specific date to generate the chart (format: YYYY-MM-DD)")
+    
+    args = parser.parse_args()
+    
+    # Calculate the date for which the chart will be generated
+    if args.date:
+        try:
+            target_date = datetime.strptime(args.date, "%Y-%m-%d").date()
+        except ValueError:
+            print("Invalid date format. Please use YYYY-MM-DD.")
+            return
+    else:
+        # Default to yesterday
+        target_date = datetime.now().date() - timedelta(days=1)
     
     nfl_dates = load_nfl_dates()
     
@@ -51,12 +65,16 @@ def main():
         start_date = datetime.strptime(period["start_date"], "%Y-%m-%d").date()
         end_date = datetime.strptime(period["end_date"], "%Y-%m-%d").date()
         
-        if start_date <= yesterday <= end_date:
-            data_file = f"data/tps/{period['season']}/transactions_{yesterday}.csv"
+        # Check if the target date falls within the NFL period
+        if start_date <= target_date <= end_date:
+            data_file = f"data/tps/{period['season']}/transactions_{target_date}.csv"
             
             if os.path.exists(data_file):
-                plot_tps(data_file, period, yesterday)
-                print(f"Chart generated for {period['phase']} - {yesterday}")
+                plot_tps(data_file, period, target_date)
+                print(f"Chart generated for {period['phase']} - {target_date}")
+            else:
+                print(f"No data available for {target_date}.")
+                return
 
 if __name__ == "__main__":
     main()

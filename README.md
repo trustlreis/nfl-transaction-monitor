@@ -4,7 +4,7 @@ This Python app collects and visualizes transaction data based on NFL season pha
 - `collect_data.py`: Collects transactions per minute (TPM) and transactions per second (TPS) data every day at 09:00 AM.
 - `plot_data.py`: Generates TPS charts every day at 09:30 AM.
 
-Additionally, you can log in to the container to manually run these scripts using `bash`.
+Additionally, you can log in to the container to manually run these scripts using `bash` and an optional `--date` parameter.
 
 ## Features
 
@@ -12,7 +12,7 @@ Additionally, you can log in to the container to manually run these scripts usin
 - **Single Container**: The app runs in a single container that schedules cron jobs and provides a bash interface for manual execution.
 - **Cron Job Automation**: Automatically schedules the scripts to run at specified times:
   - `collect_data.py` runs every day at 09:00 AM.
-  - `plot_data.py` runs every day at 09:30 AM.
+  - `plot_data.py` runs every day at 09:30 AM, with an optional `--date` parameter to generate charts for specific dates.
 - **Data Volume Mounting**: The `/app/data` directory in the container is mounted to a `local-data` directory on your host machine, allowing you to easily access the generated data and charts.
 - **Log Management**: Cron job logs are stored in a `local-logs` directory on your host machine.
 
@@ -113,18 +113,31 @@ docker-compose exec nfl-tps-app tail -f /var/log/cron.log
 
 ### Step 6: Manually Run the Scripts
 
-If you need to log into the container and manually run the scripts:
+If you need to log into the container and manually run the `collect_data.py` and `plot_data.py` scripts:
 
-```bash
-docker-compose exec nfl-tps-app bash
-```
+1. Open a bash shell in the running container:
 
-Once inside the container, you can run the Python scripts:
+   ```bash
+   docker-compose exec nfl-tps-app bash
+   ```
 
-```bash
-python collect_data.py
-python plot_data.py
-```
+2. Inside the container, you can manually execute the Python scripts with an optional `--date` parameter:
+
+   - To collect data manually for a specific date:
+
+     ```bash
+     python collect_data.py --date YYYY-MM-DD
+     ```
+
+     If no `--date` parameter is provided, the script defaults to collecting data for "yesterday."
+
+   - To generate the TPS chart manually for a specific date:
+
+     ```bash
+     python plot_data.py --date YYYY-MM-DD
+     ```
+
+     If no `--date` parameter is provided, the script defaults to generating the chart for "yesterday."
 
 ### Step 7: Stop the Container
 
@@ -145,8 +158,10 @@ docker-compose down
 │   ├── config.yaml                # YAML file for backup config if environment variables are not used
 ├── collect_data.py                # Script to collect transaction data
 ├── plot_data.py                   # Script to generate TPS charts
-├── local-data/                    # Mounted directory for storing generated data and charts (create this folder to run docker-compose)
-├── local-logs/                    # Mounted directory for cron job logs (create this folder to run docker-compose)
+├── local-data/                    # Mounted directory for storing generated data and charts
+│   ├── tps/                       # Directory where TPS data is stored
+│   ├── charts/                    # Directory where generated charts are saved
+├── local-logs/                    # Mounted directory for cron job logs
 └── README.md                      # This documentation
 ```
 
@@ -154,7 +169,8 @@ docker-compose down
 
 The following cron jobs are configured inside the container:
 
-- **Collect Data**: `collect_data.py` runs every day at 09:00 AM.
-- **Generate Charts**: `plot_data.py` runs every day at 09:30 AM.
+- **Collect Data**: `collect_data.py` runs every day at 09:00 AM. You can also manually run it with an optional `--date` parameter to specify a different date (e.g., `python collect_data.py --date YYYY-MM-DD`). If no date is provided, it defaults to "yesterday."
+  
+- **Generate Charts**: `plot_data.py` runs every day at 09:30 AM. You can also manually run it with an optional `--date` parameter to generate charts for a specific date (e.g., `python plot_data.py --date YYYY-MM-DD`). If no date is provided, it defaults to "yesterday."
 
 Cron job logs are available in the `local-logs/` directory on your host machine.
