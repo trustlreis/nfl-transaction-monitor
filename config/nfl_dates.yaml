@@ -1,0 +1,17 @@
+nfl_dates:
+  - season: 2024-2024
+    phase: Pre-season
+    start_date: "2024-08-01"
+    end_date: "2024-09-01"
+  - season: 2024-2025
+    phase: Regular Season
+    start_date: "2024-09-10"
+    end_date: "2024-12-31"
+  - season: 2024-2025
+    phase: Playoffs
+    start_date: "2025-01-01"
+    end_date: "2025-02-15"
+  - season: 2024-2025
+    phase: Super Bowl
+    start_date: "2025-02-16"
+    end_date: "2025-02-17"

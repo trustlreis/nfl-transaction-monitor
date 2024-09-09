@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  nfl-tps-app:
+    build: .
+    container_name: nfl-tps-container
+    volumes:
+      - ./local-data:/app/data           # Mount the local data directory
+      - ./local-logs:/var/log            # Mount the log directory for cron jobs
+    environment:
+      DB_HOST: ${DB_HOST}                # Referencing environment variables from the host
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
+      DB_NAME: ${DB_NAME}
+      DB_PORT: ${DB_PORT}
+    command: bash                        # Start with bash to allow manual login and cron jobs to run
+    stdin_open: true                     # Keep stdin open to allow interactive sessions
+    tty: true                            # Allocate a pseudo-TTY for bash
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    restart: always

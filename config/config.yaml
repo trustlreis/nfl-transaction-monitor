@@ -1,0 +1,6 @@
+database:
+  host: "localhost"
+  username: "your_db_user"
+  password: "your_db_password"
+  dbname: "your_database_name"
+  port: 5432  # Default PostgreSQL port

@@ -1,0 +1,5 @@
+data/
+local-data/
+local-logs/
+Dockerfile
+docker-compose.yaml
